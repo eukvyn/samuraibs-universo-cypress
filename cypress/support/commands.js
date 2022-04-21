@@ -38,3 +38,19 @@ Cypress.Commands.add('postUser', function (user) {
         expect(response.status).to.eq(200)
     })
 })
+
+Cypress.Commands.add('recoveryPass', function (email) {
+    cy.request(
+        'POST',
+        'http://localhost:3333/password/forgot',
+        { email: email }
+    ).then(function (response) {
+        expect(response.status).to.eq(204)
+
+        cy.task('findToken', this.data.email)
+            .then(function (result) {
+                // console.log(result)
+                Cypress.env('recoveryToken', result.token)
+            })
+    })
+})
